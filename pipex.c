@@ -6,7 +6,7 @@
 /*   By: slevaslo <slevaslo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 17:14:39 by slevaslo          #+#    #+#             */
-/*   Updated: 2023/03/15 17:02:59 by slevaslo         ###   ########.fr       */
+/*   Updated: 2023/03/17 17:14:30 by slevaslo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -49,7 +49,10 @@ void	exec_process(char *str, char **envp)
 
 	i = -1;
 	mycmdargs = ft_split(str, ' ');
-	path = find_path(mycmdargs[0], envp);
+	if (access(str, F_OK) == 0)
+		path = str;
+	else
+		path = find_path(mycmdargs[0], envp);
 	if (!path)
 		not_find(mycmdargs);
 	if (path == 0)
@@ -99,7 +102,10 @@ int	main(int ac, char **str, char **envp)
 	pid_t	pid_child1;
 
 	if (ac != 5)
+	{
 		ft_putstr_fd("Ex: ./pipex <file1> <cmd1> <cmd2> <file2>\n", 1);
+		return (0);
+	}
 	pipe(end);
 	pid_child = fork();
 	if (pid_child == -1)
