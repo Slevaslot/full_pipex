@@ -6,7 +6,7 @@
 /*   By: slevaslo <slevaslo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 17:38:08 by slevaslo          #+#    #+#             */
-/*   Updated: 2023/03/15 17:33:04 by slevaslo         ###   ########.fr       */
+/*   Updated: 2023/03/17 17:40:04 by slevaslo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,9 +93,12 @@ void	error(void)
 
 void	not_find(char **mycmdargs)
 {
-	ft_putstr_fd("zsh: command not found: ", 2);
-	ft_putstr_fd(mycmdargs[0], 2);
+	ft_putstr_fd("pipex: command not found: ", 2);
+	if (mycmdargs[0])
+	{
+		ft_putstr_fd(mycmdargs[0], 2);
+		ft_freetab(mycmdargs);
+	}
 	ft_putstr_fd("\n", 2);
-	ft_freetab(mycmdargs);
 	exit(EXIT_FAILURE);
 }

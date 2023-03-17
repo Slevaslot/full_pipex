@@ -6,7 +6,7 @@
 /*   By: slevaslo <slevaslo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 14:48:01 by slevaslo          #+#    #+#             */
-/*   Updated: 2023/03/15 16:56:11 by slevaslo         ###   ########.fr       */
+/*   Updated: 2023/03/17 18:56:51 by slevaslo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,6 +47,7 @@ void	dupncloses(int i, int pipes[2], t_data *data)
 	{
 		dup2(data->prev, STDIN_FILENO);
 		dup2(pipes[1], STDOUT_FILENO);
+		close(data->fd_in);
 		close(pipes[1]);
 	}
 	close(pipes[0]);
