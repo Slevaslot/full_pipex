@@ -6,7 +6,7 @@
 /*   By: slevaslo <slevaslo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 14:48:01 by slevaslo          #+#    #+#             */
-/*   Updated: 2023/03/17 18:56:51 by slevaslo         ###   ########.fr       */
+/*   Updated: 2023/03/20 12:44:06 by slevaslo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,8 +33,6 @@ void	dupncloses(int i, int pipes[2], t_data *data)
 		dup2(data->fd_in, STDIN_FILENO);
 		dup2(pipes[1], STDOUT_FILENO);
 		close(data->fd_in);
-		if (data->is_here_doc == 1)
-			close(data->here_doc[0]);
 		close(pipes[1]);
 	}
 	else if (i == data->cmds - 1)
@@ -42,12 +40,13 @@ void	dupncloses(int i, int pipes[2], t_data *data)
 		dup2(data->prev, STDIN_FILENO);
 		dup2(data->fd_out, STDOUT_FILENO);
 		close(data->prev);
+		close(data->fd_out);
 	}
 	else
 	{
 		dup2(data->prev, STDIN_FILENO);
 		dup2(pipes[1], STDOUT_FILENO);
-		close(data->fd_in);
+		close(data->prev);
 		close(pipes[1]);
 	}
 	close(pipes[0]);

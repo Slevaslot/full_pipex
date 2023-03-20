@@ -93,7 +93,11 @@ void	first_process(char **str, char **str1, int *end)
 
 	infile = open(str[1], O_RDONLY, 0777);
 	if (infile == -1)
+	{
+		close(end[1]);
+		close(end[0]);
 		error();
+	}
 	if (dup2(end[1], STDOUT_FILENO) == -1)
 		error();
 	if (dup2(infile, STDIN_FILENO) == -1)

@@ -1,14 +1,1 @@
-ft_split.c
-ft_split.o
-ft_substr.c
-ft_substr.o
-infile
-Makefile
-outfile
-pipex
-pipex_bonus
-pipex.c
-pipex.h
-pipex.o
-pipex_utils.c
-pipex_utils.o
+     14      14     140
