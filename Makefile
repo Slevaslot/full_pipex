@@ -15,8 +15,8 @@ OBJS 	= ${SRCS:.c=.o}
 CC 		= gcc
 CFLAGS 	= -Wall -Wextra -Werror -g3
 
-.c.o:		%.o : %.c
-					@gcc ${CFLAGS} -c $< -o $(<:.c=.o)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 all: 		${PROG}
 

@@ -20,8 +20,8 @@ LIBS = libft/libft.a
 CFLAGS 	= -Wall -Wextra -Werror
 CC 		= gcc
 
-.c.o:		%.o : %.c
-					@gcc ${CFLAGS} -g3 -c $< -o $(<:.c=.o)
+%.o: %.c
+	$(CC) $(CFLAGS) -c $< -o $@
 
 all: 		${PROG}
 

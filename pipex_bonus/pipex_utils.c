@@ -6,7 +6,7 @@
 /*   By: slevaslo <slevaslo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 17:38:08 by slevaslo          #+#    #+#             */
-/*   Updated: 2023/03/17 17:40:04 by slevaslo         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:37:49 by slevaslo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ char	*path_is_ok(char **paths, char *cmd)
 		free(part_path);
 		if (!fpath)
 			return (free(fpath), NULL);
-		if (access(fpath, F_OK) == 0)
+		if (access(fpath, F_OK | X_OK) == 0)
 			return (fpath);
 		free(fpath);
 		i++;
@@ -70,7 +70,7 @@ char	*find_path(char *cmd, char **envp)
 	char	*str;
 
 	i = 0;
-	if (access(cmd, F_OK) == 0)
+	if (access(cmd, F_OK | X_OK) == 0)
 		return (cmd);
 	while (ft_strnstr(envp[i], "PATH", 4) == 0)
 		i++;

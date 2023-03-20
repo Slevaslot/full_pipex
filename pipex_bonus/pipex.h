@@ -6,7 +6,7 @@
 /*   By: slevaslo <slevaslo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 17:47:35 by slevaslo          #+#    #+#             */
-/*   Updated: 2023/03/15 16:56:21 by slevaslo         ###   ########.fr       */
+/*   Updated: 2023/03/20 18:17:43 by slevaslo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,7 @@ typedef struct data
 	int	is_here_doc;
 }t_data;
 
-void	exec_process(char *str, char **envp);
+void	exec_process(t_data *data, char *str, char **envp, int *pipes);
 void	not_find(char **mycmdargs);
 void	error(void);
 void	ft_freetab(char **str);

@@ -6,23 +6,29 @@
 /*   By: slevaslo <slevaslo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/25 14:48:01 by slevaslo          #+#    #+#             */
-/*   Updated: 2023/03/20 12:44:06 by slevaslo         ###   ########.fr       */
+/*   Updated: 2023/03/20 19:03:45 by slevaslo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "pipex.h"
 
-void	exec_process(char *str, char **envp)
+void	exec_process(t_data *data, char *str, char **envp, int *pipes)
 {
 	char	**mycmdargs;
 	char	*path;
-
+	(void)pipes;
+	(void)data;
 	mycmdargs = ft_split(str, ' ');
 	if (!mycmdargs)
 		return (ft_freetab(mycmdargs));
 	path = find_path(mycmdargs[0], envp);
 	if (!path)
+	{
+		close(data->fd_in);
+		close(data->fd_out);
+		close(pipes[1]);
 		not_find(mycmdargs);
+	}
 	execve(path, mycmdargs, envp);
 }
 
@@ -30,13 +36,30 @@ void	dupncloses(int i, int pipes[2], t_data *data)
 {
 	if (i == 0)
 	{
-		dup2(data->fd_in, STDIN_FILENO);
+		if (data->fd_in == -1)
+		{
+			close(pipes[0]);
+			close(pipes[1]);
+			close(data->fd_out);
+			error();
+			return ;
+		}
+		if (data->fd_in != -1)
+		{
+			dup2(data->fd_in, STDIN_FILENO);
+			close(data->fd_in);
+		}
 		dup2(pipes[1], STDOUT_FILENO);
-		close(data->fd_in);
 		close(pipes[1]);
 	}
 	else if (i == data->cmds - 1)
 	{
+		if (data->fd_out == -1)
+		{
+			close(pipes[1]);
+			close(pipes[0]);
+			error();
+		}
 		dup2(data->prev, STDIN_FILENO);
 		dup2(data->fd_out, STDOUT_FILENO);
 		close(data->prev);
@@ -65,6 +88,7 @@ void	savencloses(int i, int pipes[2], t_data *data)
 		close(data->prev);
 		close(pipes[0]);
 	}
+	// close(data->fd_in);
 }
 
 void	process(char **argv, char **envp, t_data *data)
@@ -83,13 +107,18 @@ void	process(char **argv, char **envp, t_data *data)
 		else if (pid == 0)
 		{
 			dupncloses(i, pipes, data);
-			exec_process(argv[i + (2 + data->is_here_doc)], envp);
+			exec_process(data, argv[i + (2 + data->is_here_doc)], envp, pipes);
 		}
 		close(pipes[1]);
 		savencloses(i, pipes, data);
 	i++;
-	}
 	waitpid(pid, NULL, 0);
+	}
+	// while(i > 0)
+	// {
+	// 	wait(0);
+	// 	i--;
+	// }
 }
 
 int	main(int argc, char **argv, char **envp)
@@ -103,7 +132,9 @@ int	main(int argc, char **argv, char **envp)
 		exit(EXIT_FAILURE);
 	}
 	data.prev = -1;
-	data.fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0666);
+	data.fd_out = open(argv[argc - 1], O_WRONLY | O_CREAT | O_TRUNC, 0777);
+	if (data.fd_out == -1)
+		return (1);
 	if (ft_strncmp(argv[1], "here_doc", 8) == 0)
 		here_doc(argv[2], &data);
 	else
@@ -112,8 +143,6 @@ int	main(int argc, char **argv, char **envp)
 		data.is_here_doc = 0;
 	}
 	data.cmds = argc - (3 + data.is_here_doc);
-	if (data.fd_out == -1 || data.fd_in == -1)
-		error();
 	process(argv, envp, &data);
 	close(data.fd_in);
 	close(data.fd_out);

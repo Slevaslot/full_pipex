@@ -6,7 +6,7 @@
 /*   By: slevaslo <slevaslo@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/02/02 17:14:39 by slevaslo          #+#    #+#             */
-/*   Updated: 2023/03/17 18:54:50 by slevaslo         ###   ########.fr       */
+/*   Updated: 2023/03/20 14:30:23 by slevaslo         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,11 @@ void	second_process(char **str, char **str1, int *end)
 
 	outfile = open(str[4], O_WRONLY | O_CREAT | O_TRUNC, 0777);
 	if (outfile == -1)
+	{
+		close(end[1]);
+		close(end[0]);
 		error();
+	}
 	if (dup2(outfile, STDOUT_FILENO) == -1)
 		error();
 	if (dup2(end[0], STDIN_FILENO) == -1)
